@@ -10,6 +10,7 @@ import com.intern.hrmanagementapi.model.RegisterRequestDto;
 import com.intern.hrmanagementapi.repo.TokenRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
 import com.intern.hrmanagementapi.type.UserRole;
+import com.intern.hrmanagementapi.type.UserState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,8 @@ public class AuthenticationService {
     }
 
     UserEntity user = UserEntity.builder().username(reqUsername).email(reqEmail)
-        .password(passwordEncoder.encode(reqPw)).role(UserRole.USER).build();
+        .password(passwordEncoder.encode(reqPw)).role(UserRole.USER).state(UserState.Active)
+        .build();
 
     UserEntity savedUser = userRepo.save(user);
     String jwtToken = jwtService.generateToken(user);

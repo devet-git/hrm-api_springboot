@@ -2,8 +2,15 @@ package com.intern.hrmanagementapi.entity;
 
 import com.intern.hrmanagementapi.type.UserRole;
 import com.intern.hrmanagementapi.type.UserState;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -41,15 +48,12 @@ public class UserEntity implements UserDetails {
   private String email;
 
   private String password;
+
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
   @Enumerated(EnumType.STRING)
   private UserState state;
-
-  @OneToOne
-  @JoinColumn(name = "employee_id")
-  private Employee employee;
 
   @CreationTimestamp
   @Column
@@ -61,9 +65,17 @@ public class UserEntity implements UserDetails {
   @OneToMany(mappedBy = "user")
   private List<TokenEntity> tokens;
 
+  @OneToMany(mappedBy = "user")
+  private List<EmployeeEntity> employees;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role.name()));
+    List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+    list.add(new SimpleGrantedAuthority(role.name()));
+//    list.add(new SimpleGrantedAuthority("ADMIN"));
+
+    return list;
+//    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
   }
 
   @Override

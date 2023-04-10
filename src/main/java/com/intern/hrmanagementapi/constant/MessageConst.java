@@ -30,8 +30,8 @@ public class MessageConst {
 
   public static final class Employee {
 
-    public static final String EXISTED = "Employee already exist";
-    public static final String NOT_EXIST = "Employee is not exist";
+    public static final String EXISTED = "EmployeeEntity already exist";
+    public static final String NOT_EXIST = "EmployeeEntity is not exist";
   }
 
   public static final class Server {

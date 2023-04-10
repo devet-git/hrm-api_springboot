@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -45,8 +47,7 @@ public class EmployeeEntity {
   private String address;
 
   @Column(name = "dob", nullable = false)
-//  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/MM/yyyy")
-//  @JsonFormat(pattern = "yyyy-MM-dd")
+  @Temporal(TemporalType.DATE) // specify the type as DATE
 //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 
   private Date dob;

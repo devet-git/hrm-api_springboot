@@ -4,6 +4,11 @@ public class MessageConst {
 
   public static final String SUCCESS = "Success";
 
+  public static final class Department {
+
+    public static final String ADD_SUCCESS = "Create the department successfully";
+  }
+
   public static final class File {
 
     public static final String UPLOAD_DONE = "Uploaded the file successfully";

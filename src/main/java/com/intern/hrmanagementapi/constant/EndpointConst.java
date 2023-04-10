@@ -31,4 +31,13 @@ public final class EndpointConst {
 
     public static final String CHANGE_PASSWORD = "/change-password";
   }
+
+  public static final class Department {
+
+    public static final String BASE_PATH = ROOT_V1 + "/departments";
+    public static final String GET_BY_ID = "{id}";
+    public static final String UPDATE_BY_ID = "{id}";
+    public static final String DELETE_BY_ID = "{id}";
+  }
+
 }

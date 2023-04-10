@@ -1,6 +1,7 @@
 package com.intern.hrmanagementapi.config;
 
 import com.intern.hrmanagementapi.constant.EndpointConst;
+import com.intern.hrmanagementapi.type.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,8 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers(AUTH_WHITE_LIST)
-        .permitAll().anyRequest().authenticated();
+        .permitAll().requestMatchers("/api/v1/users/**").hasAuthority(UserRole.ADMIN.name())
+        .anyRequest().authenticated();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -4,9 +4,16 @@ public final class EndpointConst {
 
   private static final String ROOT_V1 = "/api/v1";
 
-  public static final String EMPLOYEE_BASE_PATH = ROOT_V1 + "/employee";
-  public static final String EMPLOYEE_LIST = "/batch";
-  public static final String SEARCH = "/search";
+  public static final class Employee {
+
+    public static final String BASE_PATH = ROOT_V1 + "/employees";
+    public static final String LIST = "/batch";
+    public static final String SEARCH = "/search";
+    public static final String DELETE_BY_ID = "{id}";
+    public static final String UPDATE_BY_ID = "{id}";
+    public static final String GET_BY_ID = "{id}";
+  }
+
 
   public static final String AUTH_BASE_PATH = ROOT_V1 + "/auth";
   public static final String REGISTER = "/register";

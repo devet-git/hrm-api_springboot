@@ -20,6 +20,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +41,10 @@ public class UserController {
   @Autowired
   UserService userService;
 
+
   @Operation(summary = "List all users", security = {@SecurityRequirement(name = "bearer-key")})
   @GetMapping
+
   public ResponseEntity<?> getAllUser() {
     LoggerManager.info("call api get /users");
     List<UserEntity> userEntities = userService.getAllUser();
@@ -67,6 +70,7 @@ public class UserController {
 
   @Operation(summary = "Add user", security = {@SecurityRequirement(name = "bearer-key")})
   @PostMapping
+  @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> addUser(@RequestBody UserAddingDto user)
       throws ResourceAlreadyExistsException {
     LoggerManager.info("call api Post /users");
@@ -82,6 +86,7 @@ public class UserController {
 
   @Operation(summary = "Update user by id", security = {@SecurityRequirement(name = "bearer-key")})
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserAddingDto user)
       throws ResourceNotFoundException {
     LoggerManager.info("call api Put /users");
@@ -97,6 +102,7 @@ public class UserController {
 
   @Operation(summary = "Delete user by id", security = {@SecurityRequirement(name = "bearer-key")})
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteUser(@PathVariable String id) throws ResourceNotFoundException {
     LoggerManager.info("call api Delete /user");
     try {

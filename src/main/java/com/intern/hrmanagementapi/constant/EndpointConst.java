@@ -48,4 +48,12 @@ public final class EndpointConst {
     public static final String DELETE_BY_ID = "{id}";
   }
 
+  public static final class Salary {
+
+    public static final String BASE_PATH = ROOT_V1 + "/salaries";
+    public static final String GET_BY_ID = "{id}";
+    public static final String UPDATE_BY_ID = "{id}";
+    public static final String DELETE_BY_ID = "{id}";
+  }
+
 }

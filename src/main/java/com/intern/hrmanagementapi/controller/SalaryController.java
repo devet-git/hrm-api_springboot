@@ -42,7 +42,7 @@ public class SalaryController {
 
   @Operation(summary = "Get a Salary by id", security = {@SecurityRequirement(name = "bearer-key")})
   @GetMapping(value = {EndpointConst.Salary.GET_BY_ID})
-  public ResponseEntity<?> getFileById(@PathVariable("id") UUID id) {
+  public ResponseEntity<?> getSalaryById(@PathVariable("id") UUID id) {
     var res = salaryService.getById(id);
     return ResponseEntity.ok(res);
 

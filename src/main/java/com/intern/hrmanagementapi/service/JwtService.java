@@ -1,6 +1,9 @@
 package com.intern.hrmanagementapi.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intern.hrmanagementapi.constant.JwtConst;
+import com.intern.hrmanagementapi.constant.MessageConst;
+import com.intern.hrmanagementapi.model.DataResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,11 +13,15 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -95,26 +102,59 @@ public class JwtService {
 
   private Claims extractAllClaims(String token) {
 //    return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
-
-    try {
-      return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
-          .getBody();
-
-    } catch (SignatureException ex) {
-      throw new RuntimeException("Invalid JWT signature");
-    } catch (MalformedJwtException ex) {
-      throw new RuntimeException("Invalid JWT token");
-    } catch (ExpiredJwtException ex) {
-      throw new RuntimeException("Expired JWT token");
-    } catch (UnsupportedJwtException ex) {
-      throw new RuntimeException("Unsupported JWT token");
-    } catch (IllegalArgumentException ex) {
-      throw new RuntimeException("JWT claims string is empty.");
-    }
+    return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
+        .getBody();
   }
 
   private Key getSignInKey() {
     byte[] keyBytes = Decoders.BASE64.decode(JwtConst.JWT_SECRET_KEY);
     return Keys.hmacShaKeyFor(keyBytes);
+  }
+
+  public boolean validateToken(final String token, @NonNull HttpServletResponse response)
+      throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    try {
+      Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+      return true;
+    } catch (SignatureException ex) {
+      response.setContentType("application/json");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+      objectMapper.writeValue(response.getWriter(),
+          DataResponseDto.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),
+              MessageConst.Jwt.INVALID_SIGNATURE));
+    } catch (MalformedJwtException ex) {
+      response.setContentType("application/json");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+      objectMapper.writeValue(response.getWriter(),
+          DataResponseDto.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),
+              MessageConst.Jwt.INVALID));
+    } catch (ExpiredJwtException ex) {
+      response.setContentType("application/json");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+      objectMapper.writeValue(response.getWriter(),
+          DataResponseDto.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),
+              MessageConst.Jwt.EXPIRED));
+    } catch (UnsupportedJwtException ex) {
+      response.setContentType("application/json");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+      objectMapper.writeValue(response.getWriter(),
+          DataResponseDto.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),
+              MessageConst.Jwt.UNSUPPORTED));
+    } catch (IllegalArgumentException ex) {
+      response.setContentType("application/json");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+      objectMapper.writeValue(response.getWriter(),
+          DataResponseDto.error(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(),
+              MessageConst.Jwt.EMPTY_CLAIMS));
+    }
+    
+    return false;
   }
 }

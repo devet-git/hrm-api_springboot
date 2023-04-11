@@ -43,4 +43,13 @@ public class MessageConst {
 
     public static final String ERROR = "SERVER ERROR";
   }
+
+  public static final class Jwt {
+
+    public static final String EXPIRED = "Token expired";
+    public static final String INVALID_SIGNATURE = "Invalid JWT signature";
+    public static final String INVALID = "Invalid JWT token";
+    public static final String UNSUPPORTED = "Unsupported JWT token";
+    public static final String EMPTY_CLAIMS = "JWT claims string is empty";
+  }
 }

@@ -1,13 +1,13 @@
 package com.intern.hrmanagementapi.entity;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -19,12 +19,12 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "files")
+@Table(name = "contracts")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileEntity {
+public class ContractEntity {
 
   @Id
   @GeneratedValue(generator = "uuid")
@@ -32,16 +32,17 @@ public class FileEntity {
   @JdbcTypeCode(SqlTypes.VARCHAR)
   private UUID id;
 
-  private String name;
-  private String type;
-  @Lob
-  @Basic(fetch = FetchType.LAZY)
-  @Column(length = 100000)
-  private byte[] data;
-
-  private Date createdAt;
-  
   @JdbcTypeCode(SqlTypes.VARCHAR)
-  private UUID userId;
+  private UUID employeeId;
 
+  @Column(precision = 11, scale = 2)
+  private BigDecimal basicSalary;
+
+  @Temporal(TemporalType.DATE)
+  private Date signDate;
+
+  @Temporal(TemporalType.DATE)
+  private Date expireDate;
+
+  private String workingTime;
 }

@@ -42,7 +42,7 @@ public class DepartmentController {
   @Operation(summary = "Get a department by id", security = {
       @SecurityRequirement(name = "bearer-key")})
   @GetMapping(value = {EndpointConst.Department.GET_BY_ID})
-  public ResponseEntity<?> getFileById(@PathVariable("id") UUID id) {
+  public ResponseEntity<?> getDepartmentById(@PathVariable("id") UUID id) {
     var res = departmentService.getById(id);
     return ResponseEntity.ok(res);
 

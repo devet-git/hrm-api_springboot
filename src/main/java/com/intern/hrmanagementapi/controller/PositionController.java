@@ -42,7 +42,7 @@ public class PositionController {
   @Operation(summary = "Get a position by id", security = {
       @SecurityRequirement(name = "bearer-key")})
   @GetMapping(value = {EndpointConst.Position.GET_BY_ID})
-  public ResponseEntity<?> getFileById(@PathVariable("id") UUID id) {
+  public ResponseEntity<?> getPositionById(@PathVariable("id") UUID id) {
     var res = positionService.getById(id);
     return ResponseEntity.ok(res);
 

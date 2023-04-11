@@ -88,13 +88,12 @@ public class AuthenticationService {
     }
 
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(reqEmail, reqPw));
-
     String jwtToken = jwtService.generateToken(user);
 
     revokedAllUserToken(user);
     saveUserToken(user, jwtToken);
 
-    return AuthenticationResponseDto.builder().token(jwtToken).build();
+    return AuthenticationResponseDto.builder().token(jwtToken).userID(user.getId()).build();
   }
 
   private void saveUserToken(UserEntity user, String jwtToken) {

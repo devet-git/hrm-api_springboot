@@ -2,10 +2,14 @@ package com.intern.hrmanagementapi.service;
 
 import com.intern.hrmanagementapi.constant.JwtConst;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,7 +94,23 @@ public class JwtService {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
+//    return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
+
+    try {
+      return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
+          .getBody();
+
+    } catch (SignatureException ex) {
+      throw new RuntimeException("Invalid JWT signature");
+    } catch (MalformedJwtException ex) {
+      throw new RuntimeException("Invalid JWT token");
+    } catch (ExpiredJwtException ex) {
+      throw new RuntimeException("Expired JWT token");
+    } catch (UnsupportedJwtException ex) {
+      throw new RuntimeException("Unsupported JWT token");
+    } catch (IllegalArgumentException ex) {
+      throw new RuntimeException("JWT claims string is empty.");
+    }
   }
 
   private Key getSignInKey() {

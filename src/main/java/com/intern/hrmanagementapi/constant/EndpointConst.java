@@ -24,6 +24,7 @@ public final class EndpointConst {
   public static final String FILE_BASE_PATH = ROOT_V1 + "/files";
   public static final String FILE_UPLOAD = "";
   public static final String FILE_GET_BY_ID = "{id}";
+  public static final String DELETE_GET_BY_ID = "{id}";
   public static final String FILE_UPLOAD_ONE = "/upload";
   public static final String FILE_DOWNLOAD = "/download/{id}";
 

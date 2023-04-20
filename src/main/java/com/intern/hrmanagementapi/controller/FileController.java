@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = {EndpointConst.FILE_BASE_PATH})
+@CrossOrigin(maxAge = 3600)
 @Tag(name = "File", description = "The file API")
 public class FileController {
 
@@ -42,26 +45,46 @@ public class FileController {
   @PostMapping(value = {EndpointConst.FILE_UPLOAD}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> uploadMultipleFile(
       @RequestPart("files") @RequestParam("files") List<MultipartFile> files) throws IOException {
+    System.out.println(files);
     var res = fileService.storeAll(files);
     return ResponseEntity.ok(res);
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
-  @Operation(summary = "Get list of files", security = {@SecurityRequirement(name = "bearer-key")})
-  @GetMapping
-  public ResponseEntity<?> getAllFile() {
+  @Operation(summary = "Get list of files(ADMIN)", security = {
+      @SecurityRequirement(name = "bearer-key")})
+  @GetMapping("/admin")
+  public ResponseEntity<?> getAllFileAdmin() {
     var res = fileService.getAllFile();
     return ResponseEntity.ok(
         DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
   }
 
-  @Operation(summary = "Get a file with id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Get list of files", security = {@SecurityRequirement(name = "bearer-key")})
+  @GetMapping
+  public ResponseEntity<?> getAllFileByUser() {
+
+    var res = fileService.getAllFileByUser();
+    return ResponseEntity.ok(
+        DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
+  }
+
+  @Operation(summary = "Get a file by id", security = {@SecurityRequirement(name = "bearer-key")})
   @GetMapping(value = {EndpointConst.FILE_GET_BY_ID})
   public ResponseEntity<?> getFileById(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
-    var res = fileService.getFile(fileId);
+    var res = fileService.getFileByIdAndUserId(fileId);
     return ResponseEntity.ok()
         .body(DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
+  }
+
+  @Operation(summary = "Delete a file by id", security = {
+      @SecurityRequirement(name = "bearer-key")})
+  @DeleteMapping(value = {EndpointConst.DELETE_GET_BY_ID})
+  public ResponseEntity<?> deleteById(
+      @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
+    var res = fileService.deleteById(fileId);
+    return ResponseEntity.ok().body(res);
   }
 
   @Hidden
@@ -69,7 +92,7 @@ public class FileController {
   @GetMapping(value = {EndpointConst.FILE_DOWNLOAD})
   public ResponseEntity<?> downloadFile(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
-    var downloadedFile = fileService.getFileById(fileId);
+    var downloadedFile = fileService.getFileDataById(fileId);
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
             String.format("attachment; filename=%s", downloadedFile.getName()))
         .body(downloadedFile.getData());

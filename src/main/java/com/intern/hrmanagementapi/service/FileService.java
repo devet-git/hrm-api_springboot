@@ -84,15 +84,28 @@ public class FileService {
    * @return the file or null
    * @throws ObjectNotFoundException the object not found exception
    */
-  public FileResponseDto getFile(UUID fileId) throws ObjectException {
+  public FileResponseDto getFileById(UUID fileId) throws ObjectException {
     FileEntity resFile = fileRepo.findById(fileId).orElse(null);
     if (resFile == null) {
       throw new ObjectException(MessageConst.File.NOT_EXIST, HttpStatus.BAD_REQUEST, null);
     }
     String fileDownloadUri = FileUtil.getFileDownloadUri(resFile.getId().toString());
-    var res = new FileResponseDto(resFile.getName(), fileDownloadUri, resFile.getType(),
-        resFile.getData().length, resFile.getCreatedAt());
+    var res = new FileResponseDto(resFile.getId(), resFile.getName(), fileDownloadUri,
+        resFile.getType(), resFile.getData().length, resFile.getCreatedAt());
     return res;
+  }
+
+  public FileResponseDto getFileByIdAndUserId(UUID fileId) throws ObjectException {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
+
+    FileEntity resFile = fileRepo.findByIdAndUserId(fileId, loggingUser.getId()).orElseThrow(
+        () -> new ObjectException(MessageConst.File.NOT_EXIST, HttpStatus.BAD_REQUEST, null));
+
+    String fileDownloadUri = FileUtil.getFileDownloadUri(resFile.getId().toString());
+
+    return new FileResponseDto(resFile.getId(), resFile.getName(), fileDownloadUri,
+        resFile.getType(), resFile.getData().length, resFile.getCreatedAt());
   }
 
 
@@ -103,7 +116,7 @@ public class FileService {
    * @return the file
    * @throws ObjectNotFoundException the object not found exception
    */
-  public FileEntity getFileById(UUID fileId) throws ObjectNotFoundException {
+  public FileEntity getFileDataById(UUID fileId) throws ObjectNotFoundException {
     FileEntity resFile = fileRepo.findById(fileId).orElse(null);
     if (resFile == null) {
       throw new ObjectException(MessageConst.File.NOT_EXIST, HttpStatus.BAD_REQUEST, null);
@@ -119,9 +132,32 @@ public class FileService {
   public Object getAllFile() {
     List<FileResponseDto> responseFiles = fileRepo.findAll().stream().map(file -> {
       String fileDownloadUri = FileUtil.getFileDownloadUri(file.getId().toString());
-      return new FileResponseDto(file.getName(), fileDownloadUri, file.getType(),
+      return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri, file.getType(),
           file.getData().length, file.getCreatedAt());
     }).collect(Collectors.toList());
     return responseFiles;
+  }
+
+  public Object getAllFileByUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
+
+    List<FileResponseDto> responseFiles = fileRepo.findAllByUserId(loggingUser.getId()).stream()
+        .map(file -> {
+          String fileDownloadUri = FileUtil.getFileDownloadUri(file.getId().toString());
+          return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri, file.getType(),
+              file.getData().length, file.getCreatedAt());
+        }).collect(Collectors.toList());
+    return responseFiles;
+  }
+
+  public Object deleteById(UUID id) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
+    FileEntity deletedFile = fileRepo.findByIdAndUserId(id, loggingUser.getId())
+        .orElseThrow(() -> new ObjectException("File is not exist", HttpStatus.BAD_REQUEST, null));
+    fileRepo.deleteById(id);
+    return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, deletedFile);
+
   }
 }

@@ -4,7 +4,6 @@ import com.intern.hrmanagementapi.constant.EndpointConst;
 import com.intern.hrmanagementapi.constant.MessageConst;
 import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.service.FileService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -87,7 +86,6 @@ public class FileController {
     return ResponseEntity.ok().body(res);
   }
 
-  @Hidden
   @Operation(summary = "Download a file", security = {@SecurityRequirement(name = "bearer-key")})
   @GetMapping(value = {EndpointConst.FILE_DOWNLOAD})
   public ResponseEntity<?> downloadFile(

@@ -46,8 +46,8 @@ public class EmployeeService {
 
     EmployeeEntity newEmployee = EmployeeEntity.builder().firstName(req.getFirstName())
         .lastName(req.getLastName()).dob(DateUtil.stringToDate(req.getDob()))
-        .address(req.getAddress()).gender(req.getGender()).createDate(new Date()).user(loggingUser)
-        .build();
+        .address(req.getAddress()).email(req.getEmail()).departmentId(req.getDepartmentId())
+        .gender(req.getGender()).createDate(new Date()).user(loggingUser).build();
 
     return employeeRepo.save(newEmployee);
   }
@@ -114,11 +114,11 @@ public class EmployeeService {
   /**
    * Updates the information of an existing employee.
    *
-   * @param employee The employee object to be updated.
+   * @param req The employee object to be updated.
    * @return The updated employee object.
    */
   @SneakyThrows
-  public EmployeeEntity updateEmployee(UUID id, EmployeeRequestDto employee) {
+  public EmployeeEntity updateEmployee(UUID id, EmployeeRequestDto req) {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
@@ -127,11 +127,11 @@ public class EmployeeService {
         .orElseThrow(
             () -> new ObjectException("Employee is not exist", HttpStatus.BAD_REQUEST, null));
 
-    existingEmployee.setFirstName(employee.getFirstName());
-    existingEmployee.setLastName(employee.getLastName());
-    existingEmployee.setGender(employee.getGender());
-    existingEmployee.setAddress(employee.getAddress());
-    existingEmployee.setDob(DateUtil.stringToDate(employee.getDob()));
+    existingEmployee.setFirstName(req.getFirstName());
+    existingEmployee.setLastName(req.getLastName());
+    existingEmployee.setGender(req.getGender());
+    existingEmployee.setAddress(req.getAddress());
+    existingEmployee.setDob(DateUtil.stringToDate(req.getDob()));
     existingEmployee.setUpdateDate(new Date());
     return employeeRepo.save(existingEmployee);
   }

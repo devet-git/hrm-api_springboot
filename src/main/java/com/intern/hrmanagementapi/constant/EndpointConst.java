@@ -4,6 +4,12 @@ public final class EndpointConst {
 
   private static final String ROOT_V1 = "/api/v1";
 
+  public static final class Mail {
+
+    public static final String BASE_PATH = ROOT_V1 + "/mails";
+    public static final String SEND = "";
+  }
+
   public static final class Employee {
 
     public static final String BASE_PATH = ROOT_V1 + "/employees";

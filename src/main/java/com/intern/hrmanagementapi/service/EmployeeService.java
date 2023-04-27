@@ -133,6 +133,7 @@ public class EmployeeService {
     existingEmployee.setAddress(req.getAddress());
     existingEmployee.setDob(DateUtil.stringToDate(req.getDob()));
     existingEmployee.setUpdateDate(new Date());
+    existingEmployee.setDepartmentId(req.getDepartmentId());
     return employeeRepo.save(existingEmployee);
   }
 

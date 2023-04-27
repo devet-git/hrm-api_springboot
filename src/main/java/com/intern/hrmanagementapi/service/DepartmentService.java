@@ -46,6 +46,16 @@ public class DepartmentService {
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response);
   }
 
+  public DepartmentEntity getEntityById(UUID id) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
+
+    DepartmentEntity response = departmentRepo.findByIdAndUserId(id, loggingUser.getId())
+        .orElseThrow(
+            () -> new ObjectException("Department is not exist", HttpStatus.BAD_REQUEST, null));
+    return response;
+  }
+
   public DataResponseDto add(DepartmentRequestDto req) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();

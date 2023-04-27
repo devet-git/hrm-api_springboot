@@ -49,7 +49,7 @@ public class EmployeeEntity {
   @Column(name = "dob", nullable = false)
   @Temporal(TemporalType.DATE)
   private Date dob;
-
+  @Column(unique = true)
   private String email;
 
   @Column(nullable = false)

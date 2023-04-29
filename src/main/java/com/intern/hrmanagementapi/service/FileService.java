@@ -55,7 +55,7 @@ public class FileService {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
 
-    List<String> filenames = new ArrayList<>();
+//    List<String> filenames = new ArrayList<>();
     List<FileEntity> storedFiles = new ArrayList<>();
 
     for (MultipartFile file : files) {
@@ -69,7 +69,7 @@ public class FileService {
         newFile = FileEntity.builder().name(filename).type(file.getContentType())
             .data(file.getBytes()).userId(loggingUser.getId()).createdAt(new Date()).build();
       }
-      filenames.add(file.getOriginalFilename());
+//      filenames.add(file.getOriginalFilename());
       storedFiles.add(newFile);
     }
     fileRepo.saveAll(storedFiles);
@@ -89,9 +89,11 @@ public class FileService {
     if (resFile == null) {
       throw new ObjectException(MessageConst.File.NOT_EXIST, HttpStatus.BAD_REQUEST, null);
     }
+    boolean isImage = resFile.getType().matches("^image/(png|jpg|jpeg)");
     String fileDownloadUri = FileUtil.getFileDownloadUri(resFile.getId().toString());
     var res = new FileResponseDto(resFile.getId(), resFile.getName(), fileDownloadUri,
-        resFile.getType(), resFile.getData().length, resFile.getCreatedAt());
+        isImage ? "haha" : null, resFile.getType(), resFile.getData().length,
+        resFile.getCreatedAt());
     return res;
   }
 
@@ -104,8 +106,10 @@ public class FileService {
 
     String fileDownloadUri = FileUtil.getFileDownloadUri(resFile.getId().toString());
 
+    boolean isImage = resFile.getType().matches("^image/(png|jpg|jpeg)");
     return new FileResponseDto(resFile.getId(), resFile.getName(), fileDownloadUri,
-        resFile.getType(), resFile.getData().length, resFile.getCreatedAt());
+        isImage ? "haha" : null, resFile.getType(), resFile.getData().length,
+        resFile.getCreatedAt());
   }
 
 
@@ -132,8 +136,9 @@ public class FileService {
   public Object getAllFile() {
     List<FileResponseDto> responseFiles = fileRepo.findAll().stream().map(file -> {
       String fileDownloadUri = FileUtil.getFileDownloadUri(file.getId().toString());
-      return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri, file.getType(),
-          file.getData().length, file.getCreatedAt());
+      boolean isImage = file.getType().matches("^image/(png|jpg|jpeg)");
+      return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri,
+          isImage ? "haha" : null, file.getType(), file.getData().length, file.getCreatedAt());
     }).collect(Collectors.toList());
     return responseFiles;
   }
@@ -145,8 +150,10 @@ public class FileService {
     List<FileResponseDto> responseFiles = fileRepo.findAllByUserId(loggingUser.getId()).stream()
         .map(file -> {
           String fileDownloadUri = FileUtil.getFileDownloadUri(file.getId().toString());
-          return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri, file.getType(),
-              file.getData().length, file.getCreatedAt());
+          boolean isImage = file.getType().matches("^image/(png|jpg|jpeg)");
+
+          return new FileResponseDto(file.getId(), file.getName(), fileDownloadUri,
+              isImage ? "haha" : null, file.getType(), file.getData().length, file.getCreatedAt());
         }).collect(Collectors.toList());
     return responseFiles;
   }

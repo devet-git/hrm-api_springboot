@@ -7,12 +7,18 @@ import com.intern.hrmanagementapi.exception.EmployeeNotFoundException;
 import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.model.EmployeeRequestDto;
 import com.intern.hrmanagementapi.service.EmployeeService;
+import com.intern.hrmanagementapi.util.EmployeeExportToExcel;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +42,8 @@ public class EmployeeController {
 
   @Autowired
   private EmployeeService employeeService;
+  @Autowired
+  private EmployeeExportToExcel employeeExportToExcel;
 
   @Operation(summary = "List all employees", security = {@SecurityRequirement(name = "bearer-key")})
   @GetMapping
@@ -97,25 +105,23 @@ public class EmployeeController {
               ex.getMessage()));
     }
   }
-//    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-//    @GetMapping()
-//    public ResponseEntity<?> getEmployees(@RequestParam(required = false) String orderBy,
-//                                          @RequestParam(required = false) String name,
-//                                          @RequestParam int pageNumber,
-//                                          @RequestParam int pageSize) {
-//        if (name != null) {
-//            var response = service.getEmployeeByName(name, pageNumber, pageSize);
-//            return ResponseEntity.ok(
-//                    DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
-//        } else {
-//            var response = service.getEmployeesByPageAndSort(orderBy, pageNumber, pageSize);
-//            return ResponseEntity.ok(
-//                    DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
-//        }
-//    }
 
-//    @PostMapping("/search")
-//    public Page<EmployeeEntity> search(@RequestBody SearchRequest request) {
-//        return service.searchOperatingSystem(request);
-//    }
+  @Operation(summary = "Export employees data to excel", security = {
+      @SecurityRequirement(name = "bearer-key")})
+  @GetMapping(EndpointConst.Employee.EXPORT_EXCEL)
+  public ResponseEntity<?> exportToExcel(HttpServletResponse response) throws IOException {
+
+    DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+    String currentDateTime = dateFormatter.format(new Date());
+
+    String headerKey = "Content-Disposition";
+    String headerValue = "attachment; filename=EmployeeList__" + currentDateTime + ".xlsx";
+
+    response.setHeader(headerKey, headerValue);
+    response.setContentType("application/octet-stream");
+
+    employeeExportToExcel.export(response);
+    return ResponseEntity.ok(response);
+
+  }
 }

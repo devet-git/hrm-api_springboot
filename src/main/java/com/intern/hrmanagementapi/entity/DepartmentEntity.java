@@ -1,8 +1,11 @@
 package com.intern.hrmanagementapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
 import java.util.UUID;
@@ -31,4 +34,8 @@ public class DepartmentEntity {
   private String description;
   private Date createdAt;
   private Date updatedAt;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  @JsonIgnore
+  private UserEntity user;
 }

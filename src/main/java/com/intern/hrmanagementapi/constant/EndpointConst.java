@@ -4,6 +4,12 @@ public final class EndpointConst {
 
   private static final String ROOT_V1 = "/api/v1";
 
+  public static final class Mail {
+
+    public static final String BASE_PATH = ROOT_V1 + "/mails";
+    public static final String SEND = "";
+  }
+
   public static final class Employee {
 
     public static final String BASE_PATH = ROOT_V1 + "/employees";
@@ -12,6 +18,7 @@ public final class EndpointConst {
     public static final String DELETE_BY_ID = "{id}";
     public static final String UPDATE_BY_ID = "{id}";
     public static final String GET_BY_ID = "{id}";
+    public static final String EXPORT_EXCEL = "export";
   }
 
 
@@ -21,12 +28,16 @@ public final class EndpointConst {
   public static final String LOGOUT = "/logout";
 
 
-  public static final String FILE_BASE_PATH = ROOT_V1 + "/files";
-  public static final String FILE_UPLOAD = "";
-  public static final String FILE_GET_BY_ID = "{id}";
-  public static final String DELETE_GET_BY_ID = "{id}";
-  public static final String FILE_UPLOAD_ONE = "/upload";
-  public static final String FILE_DOWNLOAD = "/download/{id}";
+  public static final class File {
+
+    public static final String BASE_PATH = ROOT_V1 + "/files";
+    public static final String UPLOAD = "";
+    public static final String GET_BY_ID = "{id}";
+    public static final String SHOW_IMAGE = "images/{id}";
+    public static final String DELETE_BY_ID = "{id}";
+    public static final String UPLOAD_ONE = "/upload";
+    public static final String DOWNLOAD = "/download/{id}";
+  }
 
   public static final class User {
 

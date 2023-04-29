@@ -1,5 +1,7 @@
 package com.intern.hrmanagementapi.model;
 
+import jakarta.validation.constraints.Email;
+import java.util.UUID;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,38 +14,31 @@ import lombok.Data;
 public class EmployeeRequestDto {
 
 
-  @NotNull(message = "EmployeeEntity firstName is required.")
-  @NotEmpty(message = "EmployeeEntity firstName is not empty or blank.")
+  @NotNull(message = "FirstName is required.")
+  @NotEmpty(message = "FirstName is not empty or blank.")
   private String firstName;
 
-  @NotNull(message = "EmployeeEntity lastName is required.")
-  @NotEmpty(message = "EmployeeEntity lastName is not empty or blank.")
+  @NotNull(message = "LastName is required.")
+  @NotEmpty(message = "LastName is not empty or blank.")
   private String lastName;
 
-  @NotNull(message = "EmployeeEntity gender is required.")
+  @NotNull(message = "Gender is required.")
   private int gender;
 
-  @NotNull(message = "EmployeeEntity address is required.")
-  @NotEmpty(message = "EmployeeEntity address is not empty or blank.")
+  @NotNull(message = "Address is required.")
+  @NotEmpty(message = "Address is not empty or blank.")
   private String address;
 
-  @NotNull(message = "EmployeeEntity date of birth is required.")
-//  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/MM/yyyy")
-//  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-//  @DateTimeFormat(pattern = "dd/MM/yyyy")
-//  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+  @NotEmpty(message = "Email can't empty")
+  @Email(message = "Email is invalid")
+  private String email;
 
+  @NotNull(message = "Date of birth is required.")
   private String dob;
 
-//  @NotNull(message = "EmployeeEntity departmentId is required.")
-//  private int departmentId;
-//
-//  @NotNull(message = "EmployeeEntity positionId is required.")
-//  private int positionId;
-//
-//  @NotNull(message = "EmployeeEntity contractId is required.")
-//  private int contractId;
-//
-//  @NotNull(message = "EmployeeEntity educationId is required.")
-//  private int educationId;
+  @NotNull(message = "PositionId is required.")
+  private UUID positionId;
+
+  @NotNull(message = "DepartmentId is required.")
+  private UUID departmentId;
 }

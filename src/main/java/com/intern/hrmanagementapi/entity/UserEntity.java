@@ -68,6 +68,9 @@ public class UserEntity implements UserDetails {
   @OneToMany(mappedBy = "user")
   private List<EmployeeEntity> employees;
 
+  @OneToMany(mappedBy = "user")
+  private List<DepartmentEntity> departments;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();

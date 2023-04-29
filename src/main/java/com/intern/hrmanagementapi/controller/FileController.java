@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {EndpointConst.FILE_BASE_PATH})
+@RequestMapping(value = {EndpointConst.File.BASE_PATH})
 @CrossOrigin(maxAge = 3600)
 @Tag(name = "File", description = "The file API")
 public class FileController {
@@ -41,7 +41,7 @@ public class FileController {
 
   @Operation(summary = "Upload multiple file", security = {
       @SecurityRequirement(name = "bearer-key")})
-  @PostMapping(value = {EndpointConst.FILE_UPLOAD}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = {EndpointConst.File.UPLOAD}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> uploadMultipleFile(
       @RequestPart("files") @RequestParam("files") List<MultipartFile> files) throws IOException {
     System.out.println(files);
@@ -69,7 +69,7 @@ public class FileController {
   }
 
   @Operation(summary = "Get a file by id", security = {@SecurityRequirement(name = "bearer-key")})
-  @GetMapping(value = {EndpointConst.FILE_GET_BY_ID})
+  @GetMapping(value = {EndpointConst.File.GET_BY_ID})
   public ResponseEntity<?> getFileById(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
     var res = fileService.getFileByIdAndUserId(fileId);
@@ -77,9 +77,18 @@ public class FileController {
         .body(DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
   }
 
+  @Operation(summary = "Show image by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @GetMapping(value = {EndpointConst.File.SHOW_IMAGE})
+  public ResponseEntity<?> showImage(
+      @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
+    var res = fileService.getFileDataById(fileId);
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).contentType(MediaType.IMAGE_PNG)
+        .body(res.getData());
+  }
+
   @Operation(summary = "Delete a file by id", security = {
       @SecurityRequirement(name = "bearer-key")})
-  @DeleteMapping(value = {EndpointConst.DELETE_GET_BY_ID})
+  @DeleteMapping(value = {EndpointConst.File.DELETE_BY_ID})
   public ResponseEntity<?> deleteById(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
     var res = fileService.deleteById(fileId);
@@ -87,7 +96,7 @@ public class FileController {
   }
 
   @Operation(summary = "Download a file", security = {@SecurityRequirement(name = "bearer-key")})
-  @GetMapping(value = {EndpointConst.FILE_DOWNLOAD})
+  @GetMapping(value = {EndpointConst.File.DOWNLOAD})
   public ResponseEntity<?> downloadFile(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
     var downloadedFile = fileService.getFileDataById(fileId);

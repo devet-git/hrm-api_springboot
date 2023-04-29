@@ -47,23 +47,20 @@ public class EmployeeEntity {
   private String address;
 
   @Column(name = "dob", nullable = false)
-  @Temporal(TemporalType.DATE) // specify the type as DATE
-//  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-
+  @Temporal(TemporalType.DATE)
   private Date dob;
+  @Column(unique = true)
+  private String email;
 
-//  @Column(name = "departmentId", nullable = false)
-//  private int departmentId;
-//
-//  @Column(name = "positionId", nullable = false)
-//  private int positionId;
-//
+  @Column(nullable = false)
+  @JdbcTypeCode(SqlTypes.VARCHAR)
+  private UUID departmentId;
+
+  @Column(nullable = false)
+  private UUID positionId;
+  //
 //  @Column(name = "contractId", nullable = false)
 //  private int contractId;
-//
-//  @Column(name = "educationId", nullable = false)
-//  private int educationId;
-
   private Date createDate;
   private Date updateDate;
 

@@ -13,6 +13,7 @@ public class FileResponseDto {
 
   private UUID id;
   private String name;
+  private String downloadUrl;
   private String url;
   private String type;
   private long size;

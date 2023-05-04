@@ -75,10 +75,8 @@ public class UserEntity implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
     list.add(new SimpleGrantedAuthority(role.name()));
-//    list.add(new SimpleGrantedAuthority("ADMIN"));
 
     return list;
-//    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
   }
 
   @Override

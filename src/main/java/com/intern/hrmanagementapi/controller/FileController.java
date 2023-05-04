@@ -8,11 +8,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -82,8 +86,40 @@ public class FileController {
   public ResponseEntity<?> showImage(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
     var res = fileService.getFileDataById(fileId);
+
     return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).contentType(MediaType.IMAGE_PNG)
         .body(res.getData());
+  }
+
+  @Operation(summary = "Show pdf by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @GetMapping(value = {EndpointConst.File.SHOW_PDF})
+  public ResponseEntity<?> showPdf(
+      @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
+
+    var res = fileService.getFileDataById(fileId);
+
+    InputStream inputStream = new ByteArrayInputStream(res.getData());
+    InputStreamResource resource = new InputStreamResource(inputStream);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_PDF);
+    headers.setContentDisposition(
+        ContentDisposition.builder("inline").filename(res.getId().toString()).build());
+
+    return ResponseEntity.ok().headers(headers).contentLength(res.getData().length).body(resource);
+  }
+
+  @Operation(summary = "Get file's data by id", security = {
+      @SecurityRequirement(name = "bearer-key")})
+  @GetMapping(value = {EndpointConst.File.GET_DATA})
+  public ResponseEntity<?> getFileData(
+      @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
+
+    var res = fileService.getFileDataById(fileId);
+    HttpHeaders headers = new HttpHeaders();
+//    headers.setContentType(MediaType.APPLICATION_PDF);
+//    headers.setContentDispositionFormData("attachment", fileId.toString());
+    return ResponseEntity.ok().headers(headers).body(res.getData());
   }
 
   @Operation(summary = "Delete a file by id", security = {

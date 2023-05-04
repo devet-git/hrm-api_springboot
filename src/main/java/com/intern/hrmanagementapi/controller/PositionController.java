@@ -2,7 +2,7 @@ package com.intern.hrmanagementapi.controller;
 
 import com.intern.hrmanagementapi.constant.EndpointConst;
 import com.intern.hrmanagementapi.model.DataResponseDto;
-import com.intern.hrmanagementapi.model.DepartmentRequestDto;
+import com.intern.hrmanagementapi.model.PositionRequestDto;
 import com.intern.hrmanagementapi.service.PositionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -52,7 +52,7 @@ public class PositionController {
 
   @Operation(summary = "Add position", security = {@SecurityRequirement(name = "bearer-key")})
   @PostMapping
-  public ResponseEntity<?> addDepartment(@Valid @RequestBody DepartmentRequestDto req) {
+  public ResponseEntity<?> addDepartment(@Valid @RequestBody PositionRequestDto req) {
     var res = positionService.add(req);
     return ResponseEntity.ok(res);
   }
@@ -60,7 +60,7 @@ public class PositionController {
   @Operation(summary = "Update position", security = {@SecurityRequirement(name = "bearer-key")})
   @PutMapping(value = {EndpointConst.Position.UPDATE_BY_ID})
   public ResponseEntity<?> updateById(@PathVariable("id") UUID id,
-      @Valid @RequestBody DepartmentRequestDto req) {
+      @Valid @RequestBody PositionRequestDto req) {
     var res = positionService.updateById(id, req);
     return ResponseEntity.ok(res);
   }

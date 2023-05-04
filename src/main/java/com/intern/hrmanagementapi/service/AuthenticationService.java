@@ -60,7 +60,7 @@ public class AuthenticationService {
     }
 
     UserEntity user = UserEntity.builder().username(reqUsername).email(reqEmail)
-        .password(passwordEncoder.encode(reqPw)).role(UserRole.USER).state(UserState.Active)
+        .password(passwordEncoder.encode(reqPw)).role(UserRole.COMPANY).state(UserState.Active)
         .build();
 
     UserEntity savedUser = userRepo.save(user);

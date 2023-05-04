@@ -6,6 +6,8 @@ import com.intern.hrmanagementapi.exception.ObjectException;
 import com.intern.hrmanagementapi.model.EmployeeRequestDto;
 import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
+import com.intern.hrmanagementapi.type.UserRole;
+import com.intern.hrmanagementapi.type.UserState;
 import com.intern.hrmanagementapi.util.DateUtil;
 import java.text.ParseException;
 import java.util.Date;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +34,7 @@ public class EmployeeService {
   private final EmployeeRepo employeeRepo;
   @Autowired
   private final UserRepo userRepo;
+  private final PasswordEncoder passwordEncoder;
 
 
   /**
@@ -43,7 +47,17 @@ public class EmployeeService {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     UserEntity loggingUser = userRepo.findByEmail(auth.getName()).orElse(null);
+//    List<?> role = (List<?>) auth.getAuthorities();
+//    System.out.println("ROLE:  " + role.get(0));
+    UserEntity existedEmployeeUserByEmail = userRepo.findByEmail(req.getEmail()).orElse(null);
 
+    if (existedEmployeeUserByEmail == null) {
+      UserEntity user = UserEntity.builder().username(req.getEmail()).email(req.getEmail())
+          .password(passwordEncoder.encode("Employee##123456")).role(UserRole.EMPLOYEE)
+          .state(UserState.Active).build();
+
+      userRepo.save(user);
+    }
     EmployeeEntity newEmployee = EmployeeEntity.builder().firstName(req.getFirstName())
         .lastName(req.getLastName()).dob(DateUtil.stringToDate(req.getDob()))
         .address(req.getAddress()).email(req.getEmail()).positionId(req.getPositionId())

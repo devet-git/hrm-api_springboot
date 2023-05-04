@@ -61,7 +61,7 @@ public class UserController {
     try {
       userEntity = userService.getUser(id);
     } catch (ResourceNotFoundException e) {
-      return ResponseEntity.ok(ResponseEntity.ok(e.getMessage()));
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     UserDto userDto = userMapper.userEntityToUserDto(userEntity);

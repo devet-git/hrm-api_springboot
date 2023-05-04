@@ -1,6 +1,10 @@
 package com.intern.hrmanagementapi.entity;
 
+import com.intern.hrmanagementapi.type.PositionLevel;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -27,8 +31,11 @@ public class PositionEntity {
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   @JdbcTypeCode(SqlTypes.VARCHAR)
   private UUID id;
+  @Column(nullable = false)
   private String name;
   private String description;
+  @Enumerated(EnumType.STRING)
+  private PositionLevel level;
   private Date createdAt;
   private Date updatedAt;
 }

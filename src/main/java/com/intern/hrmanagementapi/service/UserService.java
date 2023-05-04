@@ -1,13 +1,16 @@
 package com.intern.hrmanagementapi.service;
 
 import com.intern.hrmanagementapi.constant.MessageConst;
+import com.intern.hrmanagementapi.entity.EmployeeEntity;
 import com.intern.hrmanagementapi.entity.UserEntity;
 import com.intern.hrmanagementapi.exception.ObjectException;
 import com.intern.hrmanagementapi.exception.ResourceAlreadyExistsException;
 import com.intern.hrmanagementapi.exception.ResourceNotFoundException;
 import com.intern.hrmanagementapi.model.ChangePasswordRequestDto;
 import com.intern.hrmanagementapi.model.DataResponseDto;
+import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
+import com.intern.hrmanagementapi.type.UserRole;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,8 @@ public class UserService {
 
   @Autowired
   UserRepo userRepo;
+  @Autowired
+  EmployeeRepo employeeRepo;
   private final PasswordEncoder passwordEncoder;
 
   public List<UserEntity> getAllUser() {
@@ -33,8 +38,18 @@ public class UserService {
   }
 
   public UserEntity getUser(String id) throws ResourceNotFoundException {
-    return userRepo.findById(UUID.fromString(id))
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserEntity loggingUser = userRepo.findByEmail(auth.getName()).get();
+
+    UserEntity responseUser = userRepo.findById(UUID.fromString(id))
         .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+    if (loggingUser.getRole() == UserRole.EMPLOYEE) {
+      EmployeeEntity emp = employeeRepo.findByEmail(loggingUser.getEmail()).orElseThrow(
+          () -> new ObjectException("User as employee not found", HttpStatus.BAD_REQUEST, null));
+    }
+
+    return responseUser;
   }
 
   public UserEntity addUser(UserEntity entity) throws ResourceAlreadyExistsException {
@@ -90,7 +105,7 @@ public class UserService {
     if (!passwordEncoder.matches(req.getCurrentPassword(), loggingUser.getPassword())) {
       throw new ObjectException(MessageConst.User.PW_INCORRECT, HttpStatus.BAD_REQUEST, null);
     }
-    
+
     loggingUser.setPassword(passwordEncoder.encode(req.getNewPassword()));
     loggingUser.setUpdate_date(new Date());
     userRepo.save(loggingUser);

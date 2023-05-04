@@ -4,7 +4,7 @@ import com.intern.hrmanagementapi.constant.MessageConst;
 import com.intern.hrmanagementapi.entity.PositionEntity;
 import com.intern.hrmanagementapi.exception.ObjectException;
 import com.intern.hrmanagementapi.model.DataResponseDto;
-import com.intern.hrmanagementapi.model.DepartmentRequestDto;
+import com.intern.hrmanagementapi.model.PositionRequestDto;
 import com.intern.hrmanagementapi.repo.PositionRepo;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ public class PositionService {
 
   public DataResponseDto getAll() {
     List<PositionEntity> response = positionRepo.findAll();
-    
+
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response);
   }
 
@@ -34,21 +34,22 @@ public class PositionService {
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response);
   }
 
-  public DataResponseDto add(DepartmentRequestDto req) {
+  public DataResponseDto add(PositionRequestDto req) {
     PositionEntity newDepartment = PositionEntity.builder().name(req.getName())
-        .description(req.getDescription()).createdAt(new Date()).build();
+        .level(req.getLevel()).description(req.getDescription()).createdAt(new Date()).build();
     positionRepo.save(newDepartment);
 
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.Department.ADD_SUCCESS,
         newDepartment);
   }
 
-  public DataResponseDto updateById(UUID id, DepartmentRequestDto newData) {
+  public DataResponseDto updateById(UUID id, PositionRequestDto newData) {
     PositionEntity updatedPosition = positionRepo.findById(id).orElseThrow(
         () -> new ObjectException("Position is not exist", HttpStatus.BAD_REQUEST, null));
 
     updatedPosition.setName(newData.getName());
     updatedPosition.setDescription(newData.getDescription());
+    updatedPosition.setLevel(newData.getLevel());
     updatedPosition.setUpdatedAt(new Date());
     positionRepo.save(updatedPosition);
 

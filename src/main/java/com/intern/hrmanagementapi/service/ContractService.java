@@ -11,7 +11,7 @@ import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.repo.ContractRepo;
 import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
-import com.intern.hrmanagementapi.util.DateUtil;
+import com.intern.hrmanagementapi.util.DateTimeUtil;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -57,9 +57,9 @@ public class ContractService {
                 HttpStatus.BAD_REQUEST, null));
 
     ContractEntity newContract = ContractEntity.builder().employeeId(req.getEmployeeId())
-        .basicSalary(req.getBasicSalary()).signDate(DateUtil.stringToDate(req.getSignDate()))
-        .expireDate(DateUtil.stringToDate(req.getExpireDate())).workingTime(req.getWorkingTime())
-        .build();
+        .basicSalary(req.getBasicSalary()).signDate(DateTimeUtil.stringToDate(req.getSignDate()))
+        .expireDate(DateTimeUtil.stringToDate(req.getExpireDate()))
+        .workingTime(req.getWorkingTime()).build();
 
     contractRepo.save(newContract);
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.Department.ADD_SUCCESS,
@@ -72,8 +72,8 @@ public class ContractService {
         () -> new ObjectException("Contract is not exist", HttpStatus.BAD_REQUEST, null));
 
     updatedContract.setBasicSalary(req.getBasicSalary());
-    updatedContract.setSignDate(DateUtil.stringToDate(req.getSignDate()));
-    updatedContract.setExpireDate(DateUtil.stringToDate(req.getExpireDate()));
+    updatedContract.setSignDate(DateTimeUtil.stringToDate(req.getSignDate()));
+    updatedContract.setExpireDate(DateTimeUtil.stringToDate(req.getExpireDate()));
     updatedContract.setWorkingTime(req.getWorkingTime());
 
     contractRepo.save(updatedContract);

@@ -6,6 +6,9 @@ import com.intern.hrmanagementapi.model.InsuranceAddRequestDto;
 import com.intern.hrmanagementapi.model.InsuranceUpdateRequestDto;
 import com.intern.hrmanagementapi.service.InsuranceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,7 +46,11 @@ public class InsuranceController {
   }
 
   @Operation(summary = "Get a insurance by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.Insurance.GET_BY_ID})
   public ResponseEntity<?> getInsuranceById(@PathVariable("id") UUID id) {
     var res = insuranceService.getById(id);
@@ -51,14 +58,24 @@ public class InsuranceController {
 
   }
 
-  @Operation(summary = "Add insurance", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add insurance", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
   public ResponseEntity<?> addInsurance(@Valid @RequestBody InsuranceAddRequestDto req) {
     var res = insuranceService.add(req);
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Update insurance", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Update insurance", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping(value = {EndpointConst.Insurance.UPDATE_BY_ID})
   public ResponseEntity<?> updateById(@PathVariable("id") UUID id,
       @Valid @RequestBody InsuranceUpdateRequestDto req) {
@@ -66,7 +83,12 @@ public class InsuranceController {
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Delete insurance", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Delete insurance", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(EndpointConst.Insurance.DELETE_BY_ID)
   public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
     var res = insuranceService.deleteById(id);

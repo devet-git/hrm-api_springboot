@@ -6,6 +6,9 @@ import com.intern.hrmanagementapi.model.ContractUpdateRequestDto;
 import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.service.ContractService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,7 +46,11 @@ public class ContractController {
   }
 
   @Operation(summary = "Get a contract by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.Contract.GET_BY_ID})
   public ResponseEntity<?> getContractById(@PathVariable("id") UUID id) {
     var res = contractService.getById(id);
@@ -51,14 +58,24 @@ public class ContractController {
 
   }
 
-  @Operation(summary = "Add contract", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add contract", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
   public ResponseEntity<?> addContract(@Valid @RequestBody ContractAddRequestDto req) {
     var res = contractService.add(req);
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Update contract", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Update contract", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping(value = {EndpointConst.Contract.UPDATE_BY_ID})
   public ResponseEntity<?> updateById(@PathVariable("id") UUID id,
       @Valid @RequestBody ContractUpdateRequestDto req) {
@@ -66,7 +83,12 @@ public class ContractController {
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Delete contract", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Delete contract", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(EndpointConst.Contract.DELETE_BY_ID)
   public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
     var res = contractService.deleteById(id);

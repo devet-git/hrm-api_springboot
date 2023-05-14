@@ -8,7 +8,7 @@ import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
 import com.intern.hrmanagementapi.type.UserRole;
 import com.intern.hrmanagementapi.type.UserState;
-import com.intern.hrmanagementapi.util.DateUtil;
+import com.intern.hrmanagementapi.util.DateTimeUtil;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +59,7 @@ public class EmployeeService {
       userRepo.save(user);
     }
     EmployeeEntity newEmployee = EmployeeEntity.builder().firstName(req.getFirstName())
-        .lastName(req.getLastName()).dob(DateUtil.stringToDate(req.getDob()))
+        .lastName(req.getLastName()).dob(DateTimeUtil.stringToDate(req.getDob()))
         .address(req.getAddress()).email(req.getEmail()).positionId(req.getPositionId())
         .departmentId(req.getDepartmentId()).gender(req.getGender()).createDate(new Date())
         .user(loggingUser).build();
@@ -146,7 +146,7 @@ public class EmployeeService {
     existingEmployee.setLastName(req.getLastName());
     existingEmployee.setGender(req.getGender());
     existingEmployee.setAddress(req.getAddress());
-    existingEmployee.setDob(DateUtil.stringToDate(req.getDob()));
+    existingEmployee.setDob(DateTimeUtil.stringToDate(req.getDob()));
     existingEmployee.setUpdateDate(new Date());
     existingEmployee.setDepartmentId(req.getDepartmentId());
     existingEmployee.setPositionId(req.getPositionId());

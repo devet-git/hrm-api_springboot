@@ -5,6 +5,9 @@ import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.model.PositionRequestDto;
 import com.intern.hrmanagementapi.service.PositionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,7 +45,11 @@ public class PositionController {
   }
 
   @Operation(summary = "Get a position by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.Position.GET_BY_ID})
   public ResponseEntity<?> getPositionById(@PathVariable("id") UUID id) {
     var res = positionService.getById(id);
@@ -50,14 +57,24 @@ public class PositionController {
 
   }
 
-  @Operation(summary = "Add position", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add position", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
-  public ResponseEntity<?> addDepartment(@Valid @RequestBody PositionRequestDto req) {
+  public ResponseEntity<?> addPosition(@Valid @RequestBody PositionRequestDto req) {
     var res = positionService.add(req);
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Update position", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Update position", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping(value = {EndpointConst.Position.UPDATE_BY_ID})
   public ResponseEntity<?> updateById(@PathVariable("id") UUID id,
       @Valid @RequestBody PositionRequestDto req) {
@@ -65,7 +82,12 @@ public class PositionController {
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Delete position", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Delete position", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(EndpointConst.Position.DELETE_BY_ID)
   public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
     var res = positionService.deleteById(id);

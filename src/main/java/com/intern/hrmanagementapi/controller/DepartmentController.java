@@ -5,6 +5,9 @@ import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.model.DepartmentRequestDto;
 import com.intern.hrmanagementapi.service.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,7 +45,11 @@ public class DepartmentController {
   }
 
   @Operation(summary = "Get a department by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.Department.GET_BY_ID})
   public ResponseEntity<?> getDepartmentById(@PathVariable("id") UUID id) {
     var res = departmentService.getById(id);
@@ -50,14 +57,24 @@ public class DepartmentController {
 
   }
 
-  @Operation(summary = "Add department", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add department", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
   public ResponseEntity<?> addDepartment(@Valid @RequestBody DepartmentRequestDto req) {
     var res = departmentService.add(req);
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Update department", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Update department", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping(value = {EndpointConst.Department.UPDATE_BY_ID})
   public ResponseEntity<?> updateById(@PathVariable("id") UUID id,
       @Valid @RequestBody DepartmentRequestDto req) {
@@ -65,7 +82,12 @@ public class DepartmentController {
     return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Delete department", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Delete department", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(EndpointConst.Department.DELETE_BY_ID)
   public ResponseEntity<?> deleteById(@PathVariable("id") UUID id) {
     var res = departmentService.deleteById(id);

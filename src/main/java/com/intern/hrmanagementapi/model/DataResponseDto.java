@@ -1,11 +1,13 @@
 package com.intern.hrmanagementapi.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @AllArgsConstructor
 @Data
+@Schema
 public class DataResponseDto {
 
   private final Date timestamp;

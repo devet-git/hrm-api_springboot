@@ -1,65 +1,62 @@
 package com.intern.hrmanagementapi.controller;
 
 import com.intern.hrmanagementapi.constant.EndpointConst;
-import com.intern.hrmanagementapi.constant.MessageConst;
-import com.intern.hrmanagementapi.model.AuthenticationRequestDto;
+import com.intern.hrmanagementapi.model.AttendanceRequestDto;
 import com.intern.hrmanagementapi.model.DataResponseDto;
-import com.intern.hrmanagementapi.model.RegisterRequestDto;
-import com.intern.hrmanagementapi.service.AuthenticationService;
+import com.intern.hrmanagementapi.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = EndpointConst.AUTH_BASE_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Authentication", description = "The authentication API")
+@RequestMapping(value = {EndpointConst.Attendance.BASE_PATH})
 @CrossOrigin(maxAge = 3600)
-public class AuthenticationController {
+@Tag(name = "Attendance", description = "The attendance API")
+public class AttendanceController {
 
   @Autowired
-  private final AuthenticationService authenticationService;
+  private final AttendanceService attendanceService;
 
-  @Operation(summary = "Register", responses = {
+  @Operation(summary = "Add attendance", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
       @ApiResponse(responseCode = "200", description = "Successful", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
       @ApiResponse(responseCode = "400", description = "Bad request", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
-  @PostMapping(value = {EndpointConst.REGISTER})
-  public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto req) {
-    var response = authenticationService.register(req);
-    return ResponseEntity.ok(
-        DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
+  @PostMapping
+  public ResponseEntity<?> addAttendance(@Valid @RequestBody AttendanceRequestDto req) {
+    var res = attendanceService.add(req);
+    return ResponseEntity.ok(res);
   }
 
-  @Operation(summary = "Login", responses = {
+  @Operation(summary = "Update attendance", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
       @ApiResponse(responseCode = "200", description = "Successful", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
       @ApiResponse(responseCode = "400", description = "Bad request", content = {
           @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
-  @PostMapping(value = {EndpointConst.LOGIN})
-  public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequestDto req) {
-    var response = authenticationService.authenticate(req);
-    return ResponseEntity.ok(
-        DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
+  @PutMapping("{id}")
+  public ResponseEntity<?> update(@PathVariable("id") UUID id,
+      @Valid @RequestBody AttendanceRequestDto req) {
+    var res = attendanceService.updateById(id, req);
+    return ResponseEntity.ok(res);
   }
 
-  @GetMapping(value = {EndpointConst.LOGOUT})
-  public ResponseEntity<?> logout() {
-    return ResponseEntity.ok(
-        DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, null));
-  }
+
 }

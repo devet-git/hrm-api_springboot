@@ -11,7 +11,7 @@ import com.intern.hrmanagementapi.model.InsuranceUpdateRequestDto;
 import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.InsuranceRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
-import com.intern.hrmanagementapi.util.DateUtil;
+import com.intern.hrmanagementapi.util.DateTimeUtil;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public class InsuranceService {
                 HttpStatus.BAD_REQUEST, null));
 
     InsuranceEntity newInsurance = InsuranceEntity.builder().employeeId(req.getEmployeeId())
-        .number(req.getNumber()).issuedDate(DateUtil.stringToDate(req.getIssuedDate()))
+        .number(req.getNumber()).issuedDate(DateTimeUtil.stringToDate(req.getIssuedDate()))
         .issuedPlace(req.getIssuedPlace()).build();
     insuranceRepo.save(newInsurance);
 
@@ -71,7 +71,7 @@ public class InsuranceService {
         () -> new ObjectException("Insurance is not exist", HttpStatus.BAD_REQUEST, null));
 
     updatedInsurance.setNumber(req.getNumber());
-    updatedInsurance.setIssuedDate(DateUtil.stringToDate(req.getIssuedDate()));
+    updatedInsurance.setIssuedDate(DateTimeUtil.stringToDate(req.getIssuedDate()));
     updatedInsurance.setIssuedPlace(req.getIssuedPlace());
     insuranceRepo.save(updatedInsurance);
 

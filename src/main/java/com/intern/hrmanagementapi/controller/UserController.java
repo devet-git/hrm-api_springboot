@@ -7,10 +7,14 @@ import com.intern.hrmanagementapi.exception.ResourceNotFoundException;
 import com.intern.hrmanagementapi.logging.LoggerManager;
 import com.intern.hrmanagementapi.mapping.UserMapper;
 import com.intern.hrmanagementapi.model.ChangePasswordRequestDto;
+import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.model.UserAddingDto;
 import com.intern.hrmanagementapi.model.UserDto;
 import com.intern.hrmanagementapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -53,7 +57,12 @@ public class UserController {
     return ResponseEntity.ok(usersDto);
   }
 
-  @Operation(summary = "Get user by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Get user by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping("/{id}")
   public ResponseEntity<?> getUser(@PathVariable String id) throws ResourceNotFoundException {
     LoggerManager.info("call api get /users/id");
@@ -68,7 +77,12 @@ public class UserController {
     return ResponseEntity.ok(userDto);
   }
 
-  @Operation(summary = "Add user", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add user", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> addUser(@RequestBody UserAddingDto user)
@@ -84,7 +98,12 @@ public class UserController {
     return ResponseEntity.ok(userEntity);
   }
 
-  @Operation(summary = "Update user by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Update user by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping("/{id}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserAddingDto user)
@@ -100,7 +119,12 @@ public class UserController {
     return ResponseEntity.ok(userEntity);
   }
 
-  @Operation(summary = "Delete user by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Delete user by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping("/{id}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteUser(@PathVariable String id) throws ResourceNotFoundException {
@@ -113,7 +137,12 @@ public class UserController {
     }
   }
 
-  @Operation(summary = "Change password", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Change password", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping(EndpointConst.User.CHANGE_PASSWORD)
   public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequestDto req) {
     var res = userService.changePassword(req);

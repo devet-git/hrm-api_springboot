@@ -10,6 +10,9 @@ import com.intern.hrmanagementapi.service.EmployeeService;
 import com.intern.hrmanagementapi.util.EmployeeExportToExcel;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,7 +48,12 @@ public class EmployeeController {
   @Autowired
   private EmployeeExportToExcel employeeExportToExcel;
 
-  @Operation(summary = "List all employees", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "List all employees", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping
   public ResponseEntity<?> getAllEmployee() {
     var response = employeeService.getAllEmployeesByUserId();
@@ -53,7 +61,12 @@ public class EmployeeController {
         DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
   }
 
-  @Operation(summary = "Get employee by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Get employee by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(EndpointConst.Employee.GET_BY_ID)
   public ResponseEntity<?> getEmployeeById(@PathVariable UUID id) {
     var response = employeeService.getEmployeeByIdAndUserId(id);
@@ -61,7 +74,12 @@ public class EmployeeController {
         DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, response));
   }
 
-  @Operation(summary = "Add employee", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add employee", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping
   public ResponseEntity<?> addEmployee(@Valid @RequestBody EmployeeRequestDto employee)
       throws ParseException {
@@ -72,7 +90,12 @@ public class EmployeeController {
   }
 
   @Hidden
-  @Operation(summary = "Add list employee", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Add list employee", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping(value = {EndpointConst.Employee.LIST})
   public ResponseEntity<?> addEmployees(@Valid @RequestBody List<EmployeeEntity> employees) {
     var response = employeeService.saveEmployees(employees);
@@ -82,7 +105,11 @@ public class EmployeeController {
   }
 
   @Operation(summary = "Update employee by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PutMapping(EndpointConst.Employee.UPDATE_BY_ID)
   public ResponseEntity<?> updateEmployee(@PathVariable UUID id,
       @RequestBody EmployeeRequestDto employee) {
@@ -92,7 +119,11 @@ public class EmployeeController {
   }
 
   @Operation(summary = "Delete employee by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(EndpointConst.Employee.DELETE_BY_ID)
   public ResponseEntity<?> deleteEmployee(@PathVariable UUID id) {
     try {

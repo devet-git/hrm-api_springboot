@@ -6,6 +6,9 @@ import com.intern.hrmanagementapi.model.DataResponseDto;
 import com.intern.hrmanagementapi.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.ByteArrayInputStream;
@@ -44,11 +47,15 @@ public class FileController {
   private final FileService fileService;
 
   @Operation(summary = "Upload multiple file", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @PostMapping(value = {EndpointConst.File.UPLOAD}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> uploadMultipleFile(
       @RequestPart("files") @RequestParam("files") List<MultipartFile> files) throws IOException {
-    System.out.println(files);
+//    System.out.println(files);
     var res = fileService.storeAll(files);
     return ResponseEntity.ok(res);
   }
@@ -72,7 +79,12 @@ public class FileController {
         DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
   }
 
-  @Operation(summary = "Get a file by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Get a file by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.File.GET_BY_ID})
   public ResponseEntity<?> getFileById(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
@@ -81,7 +93,12 @@ public class FileController {
         .body(DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, res));
   }
 
-  @Operation(summary = "Show image by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Show image by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.File.SHOW_IMAGE})
   public ResponseEntity<?> showImage(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
@@ -91,7 +108,12 @@ public class FileController {
         .body(res.getData());
   }
 
-  @Operation(summary = "Show pdf by id", security = {@SecurityRequirement(name = "bearer-key")})
+  @Operation(summary = "Show pdf by id", security = {
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @GetMapping(value = {EndpointConst.File.SHOW_PDF})
   public ResponseEntity<?> showPdf(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {
@@ -123,7 +145,11 @@ public class FileController {
   }
 
   @Operation(summary = "Delete a file by id", security = {
-      @SecurityRequirement(name = "bearer-key")})
+      @SecurityRequirement(name = "bearer-key")}, responses = {
+      @ApiResponse(responseCode = "200", description = "Successful", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),
+      @ApiResponse(responseCode = "400", description = "Bad request", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = DataResponseDto.class))}),})
   @DeleteMapping(value = {EndpointConst.File.DELETE_BY_ID})
   public ResponseEntity<?> deleteById(
       @Parameter(description = "File id", required = true) @PathVariable("id") UUID fileId) {

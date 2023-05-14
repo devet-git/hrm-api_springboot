@@ -11,7 +11,7 @@ import com.intern.hrmanagementapi.model.SalaryUpdateRequestDto;
 import com.intern.hrmanagementapi.repo.EmployeeRepo;
 import com.intern.hrmanagementapi.repo.SalaryRepo;
 import com.intern.hrmanagementapi.repo.UserRepo;
-import com.intern.hrmanagementapi.util.DateUtil;
+import com.intern.hrmanagementapi.util.DateTimeUtil;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -58,8 +58,8 @@ public class SalaryService {
 
     SalaryEntity newSalary = SalaryEntity.builder().employeeId(req.getEmployeeId())
         .salary(req.getSalary()).bonus(req.getBonus()).allowance(req.getAllowance())
-        .startDate(DateUtil.stringToDate(req.getStartDate()))
-        .endDate(DateUtil.stringToDate(req.getEndDate())).build();
+        .startDate(DateTimeUtil.stringToDate(req.getStartDate()))
+        .endDate(DateTimeUtil.stringToDate(req.getEndDate())).build();
 
     salaryRepo.save(newSalary);
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.Department.ADD_SUCCESS,
@@ -74,8 +74,8 @@ public class SalaryService {
     updatedSalary.setSalary(req.getSalary());
     updatedSalary.setAllowance(req.getAllowance());
     updatedSalary.setBonus(req.getBonus());
-    updatedSalary.setStartDate(DateUtil.stringToDate(req.getStartDate()));
-    updatedSalary.setEndDate(DateUtil.stringToDate(req.getEndDate()));
+    updatedSalary.setStartDate(DateTimeUtil.stringToDate(req.getStartDate()));
+    updatedSalary.setEndDate(DateTimeUtil.stringToDate(req.getEndDate()));
     salaryRepo.save(updatedSalary);
 
     return DataResponseDto.success(HttpStatus.OK.value(), MessageConst.SUCCESS, updatedSalary);

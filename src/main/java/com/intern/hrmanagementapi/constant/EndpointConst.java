@@ -52,6 +52,12 @@ public final class EndpointConst {
     public static final String CHANGE_PASSWORD = "/change-password";
   }
 
+  public static final class Attendance {
+
+    public static final String BASE_PATH = ROOT_V1 + "/attendances";
+
+  }
+
   public static final class Department {
 
     public static final String BASE_PATH = ROOT_V1 + "/departments";

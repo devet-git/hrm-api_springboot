@@ -9,6 +9,12 @@ public class MessageConst {
     public static final String ADD_SUCCESS = "Create the department successfully";
   }
 
+  public static final class Attendance {
+
+    public static final String ADD_SUCCESS = "Create the attendance successfully";
+    public static final String ADD_FAILED = "Create the attendance failed";
+  }
+
   public static final class File {
 
     public static final String UPLOAD_DONE = "Uploaded the file successfully";
